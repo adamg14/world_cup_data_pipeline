@@ -1,0 +1,54 @@
+services:
+  webserver:
+    image: apache/airflow:2.6.0-python3.9
+    command: webserver
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      - AIRFLOW__WEBSERVER__BASE_URL=http://localhost:8080
+      - AIRFLOW__WEBSERVER__SECRET_KEY=46d3kJQoLYYPQ8xeq0BDnZnLhEKpKf87FMzUz9Dho=
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./requirements.txt:/opt/airflow/requirements.txt
+      - ./data:/opt/airflow/data
+      - ./pipelines:/opt/airflow/pipelines
+      - ./constants.py:/opt/airflow/constants.py
+      - ./utils:/opt/airflow/utils
+    ports:
+      - "8080:8080"
+    networks:
+      - airflow
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    ports:
+      - "5432:5432"
+    networks:
+      - airflow
+
+  scheduler:
+    image: apache/airflow:2.6.0-python3.9
+    command: scheduler
+    restart: always
+    depends_on:
+      - postgres
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./requirements.txt:/opt/airflow/requirements.txt
+      - ./data:/opt/airflow/data
+      - ./pipelines:/opt/airflow/pipelines
+      - ./constants.py:/opt/airflow/constants.py
+      - ./utils:/opt/airflow/utils
+    networks:
+      - airflow
+
+networks:
+  airflow:
