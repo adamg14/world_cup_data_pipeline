@@ -2,56 +2,53 @@ services:
   webserver:
     image: apache/airflow:2.6.0-python3.9
     command: webserver
-    entrypoint: ["/bin/bash", "/opt/airflow/scripts/entrypoint.sh"]
+    entrypoint: ["/opt/airflow/script/entrypoint.sh"]
+    #    restart: always
     depends_on:
       - postgres
     environment:
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
-      - AIRFLOW__WEBSERVER__BASE_URL=http://localhost:8080
-      - AIRFLOW__WEBSERVER__SECRET_KEY=46d3kJQoLYYPQ8xeq0BDnZnLhEKpKf87FMzUz9Dho=
+      - AIRFLOW__WEBSERVER_BASE_URL=http://localhost:8080
+      - AIRFLOW__WEBSERVER__SECRET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
     volumes:
       - ./dags:/opt/airflow/dags
+      - ./script/entrypoint.sh:/opt/airflow/script/entrypoint.sh
       - ./requirements.txt:/opt/airflow/requirements.txt
       - ./data:/opt/airflow/data
-      - ./pipelines:/opt/airflow/pipelines
-      - ./constants.py:/opt/airflow/constants.py
-      - ./utils:/opt/airflow/utils
-      - ./scripts/entrypoint.sh:/opt/airflow/scripts/entrypoint.sh
+    #      - ./airflow.cfg:/opt/airflow/airflow.cfg
+    #      - ./airflow.db:/opt/airflow/airflow.db
     ports:
       - "8080:8080"
     networks:
-      - airflow
+      - confluent
 
   postgres:
-    image: postgres:13
+    image: postgres:14.0
     environment:
-      POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow
-    ports:
-      - "5432:5432"
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
     networks:
-      - airflow
+      - confluent
 
   scheduler:
     image: apache/airflow:2.6.0-python3.9
-    command: scheduler
-    restart: always
-    entrypoint: ["/bin/bash", "/opt/airflow/scripts/entrypoint.sh"]
     depends_on:
-      - postgres
+      - webserver
     volumes:
       - ./dags:/opt/airflow/dags
       - ./requirements.txt:/opt/airflow/requirements.txt
       - ./data:/opt/airflow/data
-      - ./pipelines:/opt/airflow/pipelines
-      - ./constants.py:/opt/airflow/constants.py
-      - ./utils:/opt/airflow/utils
-      - ./scripts/entrypoint.sh:/opt/airflow/scripts/entrypoint.sh
+    environment:
+      - LOAD_EX=n
+      - EXECUTOR=Sequential
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      - AIRFLOW__WEBSERVER_BASE_URL=http://localhost:8080
+      - AIRFLOW__WEBSERVER__SECRET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
+    command: bash -c "pip install --no-cache-dir -r ./requirements.txt && airflow db upgrade && airflow scheduler"
     networks:
-      - airflow
-
+      - confluent
 networks:
-  airflow:
+  confluent:

@@ -1,12 +1,12 @@
-from airflow import dag
+from airflow import DAG
 from datetime import datetime
 from airflow.operators.python import PythonOperator
-from "../pipelines/data_pipeline" import get_wikipedia_page
+from pipelines.data_pipeline import extract_dataset, read_csv
 
 dag = DAG(
     dag_id="web_scraping",
     default_args = {
-        "owner" = "Adam Worede",
+        "owner": "Adam Worede",
         "start_date": datetime(2025, 5, 25),
     },
     schedule_interval = None,
@@ -14,12 +14,12 @@ dag = DAG(
 )
 
 # data extraction - these python operators take a raw data source (csv) either stored locally or downloaded from kaggle and transforms into a pandas dataframe
-extract_stadium_data = PytonOperator(
+extract_stadium_data = PythonOperator(
     task_id = "stadium_data_extraction",
     python_callable = read_csv,
     provide_context=True,
-    op_kwags = {
-        "file_path": "data/stadium"
+    op_kwargs = {
+        "file_path": "./data/stadiums.csv"
     },
     dag = dag
 )
@@ -38,7 +38,7 @@ extract_team_data = PythonOperator(
     task_id = "match_data_extraction",
     python_callable = extract_dataset,
     provide_context= True,
-    op_kwags = {
+    op_kwargs = {
         "url": "swaptr/fifa-world-cup-2022-statistics",
         "destination_directory": "../data"
     },
@@ -65,5 +65,5 @@ extract_match_data = PythonOperator(
         "destination_directory": "../data"
     }
 )
-# data cleaning
+
 # data loading

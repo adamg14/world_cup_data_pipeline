@@ -24,7 +24,3 @@ def extract_dataset(url, destination_directory):
 
 def read_csv(file_path):
     return pd.read_csv(file_path)
-
-print(extract_dataset("swaptr/fifa-world-cup-2022-statistics", "../data"))
-
-print(read_csv("data/goalscorers.csv"))
