@@ -1,7 +1,8 @@
 from airflow import dag
 from datetime import datetime
 from airflow.operators.python import PythonOperator
-from pipelines.data_pipeline import get_wikipedia_page
+from "../pipelines/data_pipeline" import get_wikipedia_page
+
 dag = DAG(
     dag_id="web_scraping",
     default_args = {
