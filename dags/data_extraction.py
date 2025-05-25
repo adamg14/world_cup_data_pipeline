@@ -13,25 +13,57 @@ dag = DAG(
     catchup = False
 )
 
-# data extraction
+# data extraction - these python operators take a raw data source (csv) either stored locally or downloaded from kaggle and transforms into a pandas dataframe
 extract_stadium_data = PytonOperator(
-    task_id = "staium_data_extraction"
-    python_callable = get_wikipedia_page,
+    task_id = "stadium_data_extraction",
+    python_callable = read_csv,
     provide_context=True,
     op_kwags = {
-        "url": "https://en.wikipedia.org/wiki/List_of_football_stadiums_in_Qatar"
+        "file_path": "data/stadium"
     },
     dag = dag
 )
 
-extract_statistics = PythonOperator(
-    task_id = "statistics_data_extraction",
-    python_callable = get_wikipedia_page,
+extract_goalscorer_data = PythonOperator(
+    task_id = "goalscorer_data_extraction",
+    python_callable = read_csv,
     provide_context=True,
-    op_kwags = {
-        "url": "https://en.wikipedia.org/wiki/2022_FIFA_World_Cup#Statistics"
+    op_kwargs = {
+        "file_path": "data/goalscorers.csv"
     },
     dag = dag
 )
-# data transformation
+
+extract_team_data = PythonOperator(
+    task_id = "match_data_extraction",
+    python_callable = extract_dataset,
+    provide_context= True,
+    op_kwags = {
+        "url": "swaptr/fifa-world-cup-2022-statistics",
+        "destination_directory": "../data"
+    },
+    dag = dag
+)
+
+extract_player_stats_data = PythonOperator(
+    task_id = "player_stats_data_extraction",
+    python_callable = extract_dataset,
+    provide_context = True,
+    op_kwargs = {
+        "url": "tittobobby/fifa-world-cup-2022-player-stats",
+        "destination_directory": "../data"
+    },
+    dag = dag
+)
+
+extract_match_data = PythonOperator(
+    task_id = "match_data_extraction",
+    python_callable = extract_dataset,
+    provide_context = True,
+    op_kwargs = {
+        "url": "shrikrishnaparab/fifa-world-cup-2022-qatar-match-data",
+        "destination_directory": "../data"
+    }
+)
+# data cleaning
 # data loading
