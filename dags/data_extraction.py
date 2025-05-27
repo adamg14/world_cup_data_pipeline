@@ -46,6 +46,17 @@ extract_goalscorer_data = PythonOperator(
     dag = dag
 )
 
+load_goalscorer_data = PythonOperator(
+    task_id = "goalscorer_data_load",
+    python_callable = write_data_lake,
+    provide_context = True,
+    op_kwargs = {
+        "local_file_path": "./data/goalscorers.csv",
+        "adl_file_path": "raw-data/goalscorers.csv"
+    },
+    dag = dag
+)
+
 extract_team_data = PythonOperator(
     task_id = "match_data_extraction",
     python_callable = extract_dataset,
@@ -53,6 +64,17 @@ extract_team_data = PythonOperator(
     op_kwargs = {
         "url": "swaptr/fifa-world-cup-2022-statistics",
         "destination_directory": "./data"
+    },
+    dag = dag
+)
+
+load_team_data = PythonOperator(
+    task_id = "team_data_load",
+    python_callable = write_data_lake,
+    provide_context = True,
+    op_kwargs = {
+        "local_file_path": "./data/team_data.csv",
+        "adl_file_path": "raw-data/team_data.csv"
     },
     dag = dag
 )
@@ -68,6 +90,17 @@ extract_player_stats_data = PythonOperator(
     dag = dag
 )
 
+load_player_stats_data = PythonOperator(
+    task_id = "play_stats_data_load",
+    python_callable = write_data_lake,
+    provide_context = True,
+    op_kwargs = {
+        "local_file_path": "./data/player_list.csv",
+        "adl_file_path": "raw-data/player_list.csv"
+    },
+    dag = dag
+)
+
 extract_match_data = PythonOperator(
     task_id = "match_data_extraction",
     python_callable = extract_dataset,
@@ -75,9 +108,23 @@ extract_match_data = PythonOperator(
     op_kwargs = {
         "url": "shrikrishnaparab/fifa-world-cup-2022-qatar-match-data",
         "destination_directory": "./data"
-    }
+    },
+    dag = dag
 )
 
+load_match_data = PythonOperator(
+    task_id = "match_data_load",
+    python_callable = extract_dataset,
+    provide_context = True,
+    op_kwargs = {
+        "local_file_path": "./data/group_stats.csv",
+        "adl_file_path": "raw-data/group_stats.csv"
+    },
+)
 extract_stadium_data >> load_stadium_data
+extract_goalscorer_data >> load_goalscorer_data
+extract_team_data >> load_team_data
+extract_match_data >> load_match_data
+# need to check which file goes with which dataset
 
 # data loading
