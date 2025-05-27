@@ -2,7 +2,16 @@ import kagglehub
 import shutil
 import pandas as pd
 import os
+from adlfs import AzureBlobFileSystem
+from dotenv import load_dotenv
 
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "../../.env"))
+
+# azure data lake file system
+fs = AzureBlobFileSystem(
+    account_name=os.getenv("STORAGE_ACCOUNT_NAME"),
+        account_key=os.getenv("STORAGE_ACCOUNT_KEY")
+)
 
 def extract_dataset(url, destination_directory):
     source_directory = kagglehub.dataset_download(url)
@@ -24,3 +33,11 @@ def extract_dataset(url, destination_directory):
 
 def read_csv(file_path):
     return pd.read_csv(file_path)
+
+
+def write_data_lake(local_file_path, adl_file_path):
+    with open(local_file_path, "rb") as data_source:
+        with fs.open(adl_file_path, 'wb') as data_lake:
+            data_lake.write(data_source.read())
+
+write_data_lake("data/stadiums.csv", "/raw-data/stadiums.csv")

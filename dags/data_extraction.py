@@ -24,12 +24,23 @@ extract_stadium_data = PythonOperator(
     dag = dag
 )
 
+# loading the raw data into the azure data lake
+load_stadium_data = PythonOperator(
+    task_id = "stadium_data_load",
+    python_callable = write_data_lake,
+    provide_context = True,
+    op_kwargs = {
+        "local_file_path": "./data/stadiums.csv",
+        
+    }
+)
+
 extract_goalscorer_data = PythonOperator(
     task_id = "goalscorer_data_extraction",
     python_callable = read_csv,
     provide_context=True,
     op_kwargs = {
-        "file_path": "data/goalscorers.csv"
+        "file_path": "./data/goalscorers.csv"
     },
     dag = dag
 )
@@ -40,7 +51,7 @@ extract_team_data = PythonOperator(
     provide_context= True,
     op_kwargs = {
         "url": "swaptr/fifa-world-cup-2022-statistics",
-        "destination_directory": "../data"
+        "destination_directory": "./data"
     },
     dag = dag
 )
@@ -51,7 +62,7 @@ extract_player_stats_data = PythonOperator(
     provide_context = True,
     op_kwargs = {
         "url": "tittobobby/fifa-world-cup-2022-player-stats",
-        "destination_directory": "../data"
+        "destination_directory": "./data"
     },
     dag = dag
 )
@@ -62,7 +73,7 @@ extract_match_data = PythonOperator(
     provide_context = True,
     op_kwargs = {
         "url": "shrikrishnaparab/fifa-world-cup-2022-qatar-match-data",
-        "destination_directory": "../data"
+        "destination_directory": "./data"
     }
 )
 
