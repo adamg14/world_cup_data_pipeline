@@ -50,4 +50,4 @@ def write_data_lake(local_file_path, adl_file_path):
         with fs.open(adl_file_path, 'wb') as data_lake:
             data_lake.write(data_source.read())
 
-# write_data_lake("data/stadiums.csv", "/raw-data/stadiums.csv")
+# write_data_lake("data/stadiums.csv", "/world-cup-data/raw_football_data/stadiums.csv")
