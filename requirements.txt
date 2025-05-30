@@ -3,3 +3,4 @@ pandas
 kagglehub
 adlfs
 python-dotenv
+pyodbc
