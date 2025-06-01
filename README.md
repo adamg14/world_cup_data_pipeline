@@ -27,5 +27,5 @@ This project implements a modern ELT (Extract, Load, Transform) data pipeline fo
 - **Google Looker Studio** – Data visualization
 
 # Dashboard
-![Dashboard Preview] (./dashboard_1.png)
-![Dashboard Preview 2] (dashboard_2.png)
+- ![Dashboard Preview](./dashboard_1.png)
+- ![Dashboard Preview 2](dashboard_2.png)
