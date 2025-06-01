@@ -17,7 +17,7 @@ This project implements a modern ELT (Extract, Load, Transform) data pipeline fo
 ## 🛠️ Technologies Used
 
 - **Apache Airflow** – Workflow orchestration
-- **Docker** – Containerization
+- **Docker** – Containerisation
 - **PostgreSQL** – Storing metadata on the airflow orchastrator
 - **Azure Blob Storage** – Cloud storage for raw files
 - **Azure Data Lake Gen2** – Storage for processed data
@@ -27,5 +27,5 @@ This project implements a modern ELT (Extract, Load, Transform) data pipeline fo
 - **Google Looker Studio** – Data visualization
 
 # Dashboard
-![Dashboard Preview] (dashboard_1.png)
+![Dashboard Preview] (./dashboard_1.png)
 ![Dashboard Preview 2] (dashboard_2.png)
