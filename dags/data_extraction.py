@@ -3,6 +3,7 @@ from datetime import datetime
 from airflow.operators.python import PythonOperator
 from pipelines.data_pipeline import extract_dataset, read_csv, write_data_lake
 from airflow.operators.empty import EmptyOperator
+
 dag = DAG(
     dag_id="web_scraping",
     start_date = datetime(2025, 5, 27),
