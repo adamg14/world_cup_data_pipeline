@@ -2,6 +2,9 @@
 
 This project implements a modern ELT (Extract, Load, Transform) data pipeline for FIFA World Cup 2022 data. It leverages Apache Airflow for orchestration, Docker for containerization, PostgreSQL for staging, and Azure services (Data Lake, Blob Storage, Data Factory, and Synapse SQL) for scalable data processing and storage. The pipeline culminates in visualizations using Google Looker Studio.
 
+## Tech Stack
+![Tech Stack](data_engineering_tech_stack.drawio.png)
+
 ## 🚀 Overview
 
 - **Data Sources**: Raw datasets related to FIFA World Cup 2022 matches, teams, and players.
